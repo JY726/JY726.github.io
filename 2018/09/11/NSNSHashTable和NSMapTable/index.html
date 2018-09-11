@@ -7,7 +7,7 @@
 		
 
 <head>
-	<title>Archives</title>
+	<title>Hexo</title>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="apple-mobile-web-app-title" content="Amaze UI" />
@@ -51,8 +51,6 @@
 		
 			<p class="page-name"></p>
 		
-		
-			<p class="page-name">文章归档</p>
 		
 	
 </header>
@@ -98,72 +96,150 @@
 
 		<main>
 		<div class="page-container">
-		<!-- content srart -->
+		
+    <!-- content srart -->
 <div class="am-g am-g-fixed blog-fixed blog-content">
 	<div class="am-u-md-8 am-u-sm-12">
-		<div class="archive">
 
-			<div class="blog-text-center">
+		<article class="am-article blog-article-p">
+			<div class="am-article-hd">
 				
-					<i class="fa fa-book">总计2篇文章</i>
-				
-			</div>  
 
-			
 
-							
-				
-				
-				
+				<h1 class="am-article-title blog-text-center">
+					
 					
 
-					
-					<!--<a href="/archives/2018" class="archive-year">2018</a>-->
-				
-								
-				
-					  
-					<div class="archive-year">
-						<a href="/archives/2018/09">
-							2018-09
-						</a>
-					</div>				
-				  
-				
-				<div class="archive-item">
-					<div class="archive-post-title">									
-						<a href="/2018/09/11/NSNSHashTable和NSMapTable/" itemprop="url"></a>
-					</div>
-					<div class="archive-post-time">
-						<a href="/2018/09/11/NSNSHashTable和NSMapTable/" itemprop="url">09-11</a>
-					</div>
-				</div>		        							
-							
-				
-				
-				
-								
-				  
-				
-				<div class="archive-item">
-					<div class="archive-post-title">									
-						<a href="/2018/09/10/hello-world/" itemprop="url">Hello World</a>
-					</div>
-					<div class="archive-post-time">
-						<a href="/2018/09/10/hello-world/" itemprop="url">09-10</a>
-					</div>
-				</div>		        							
-			
-				
-			
 
+				</h1>
+
+				<p class="am-article-meta blog-text-center">
+					<span>
+						<i class="fa fa-clock-o"></i> 
+						<a href="/2018/09/11/NSNSHashTable和NSMapTable/" itemprop="url">
+	<time datetime="2018-09-11T01:07:29.397Z" itemprop="datePublished">
+  		2018-09-11
+  </time>
+</a>    
+&nbsp
+					</span>
+					<span>						
+						
+					</span>	
+				</p>
+			</div>	
+
+			<div class="am-article-bd">
+				<div class="content">
+					<h1 id="OC中的NSHashTable和NSMapTable"><a href="#OC中的NSHashTable和NSMapTable" class="headerlink" title="OC中的NSHashTable和NSMapTable"></a>OC中的NSHashTable和NSMapTable</h1><p>对于NSSet来说，object是强引用，使用isEqual方法去检查对象是否相等，使用hash去获取hash值，和NSDictionary中的value是一样的。而NSDictionary中的key则是copy的，如果想要使NSSet中的objects或者NSDictionary中的values为weak，或者NSDictionary使用没有实现copy协议的对象作为key时，则需要使用NSValue的方法valueWithNonretainedObject.</p>
+<p>NSHashTable类似Set，NSMapTable类似NSDIctionary.</p>
+<p>NSHashTable相对于NSSet/NSMutableSet有如下特征：</p>
+<ul>
+<li>NSHashTable是可变的，没有不可变的和其对应，NSHashTable中的对象可是使用weak引用。</li>
+<li>NSHashTable可以在输入时copy对象</li>
+<li>NSHashTable可以包含任意指针，使用指针去做相等或hashing检查。</li>
+</ul>
+<p>NSHashTable *hashTable = [NSHashTable hashTableWithOptions:NSPointerFunctionsCopyIn];<br>HashTable初始化时的Options有很多选项：</p>
+<p>1、NSHashTableStrongMemory和NSPointerFunctionsStrongMemory相同，表示hashTable对其中的对象使用强引用。</p>
+<p>2、NSHashTableWeakMemory和NSPointerFunctionsWeakMemory相同。表示HashTable对其中的对象使用weak存储，当对象被销毁时，自动将其从HashTable中移除。</p>
+<p>3、NSHashTableCopyIn和NSPointerFunctionsCopyIn相同，表示HashTable在add对象时，会将他们copy一份。</p>
+<p>4、NSHashTableObjectPointerPersonality和NSPointerFunctionsObjectPointerPersonality相同，表示HashTable直接使用指针进行isEqual和Hash.</p>
+<p> NSMapTable和NSDictionary相对应，相对于NSDictionary/NSMutableDictionary，NSMapTable有如下的特征： </p>
+<ul>
+<li><p>NSDictionary/NSMutableDictionary会copy对应的key，强引用相应的value值。</p>
+</li>
+<li><p>NSMapTable是可变的，没有不可变的与其对应。</p>
+</li>
+<li><p>NSMapTable可以对其key和value弱引用，在这种情况下，当key或者value被释放的时候，此entry会自动从NSMaoTable中移除。</p>
+</li>
+<li><p>NSMapTable在加入（key、value）的时候，可以对其value设置成copy。</p>
+</li>
+<li><p>NSMapTable可以包含任意的指针，并使用指针去做相等或hashing操作。</p>
+</li>
+</ul>
+<p>id delegate = …; </p>
+<p>NSMapTable *mapTable = [NSMapTable mapTableWithKeyOptions:NSMapTableStrongMemory valueOptions:NSMapTableWeakMemory]; </p>
+<p>[mapTable setObject:delegate forKey:@”foo”]; </p>
+<p>NSLog(@”Keys: %@”, [[mapTable keyEnumerator] allObjects]);</p>
+<p>options可以通过设置不同的值来达到不同的目标，</p>
+<p>1、NSMapTableStrongMemory: 指定对应的key或者value为强引用。</p>
+<p>2、NSMapTableWeakMemory: 指定对应的key或者value为弱引用。</p>
+<p>3、NSMapTableCopyIn: 指定对应的key或者value在加入集合中的时候copy</p>
+<p>4、NSMapTableObjectPointerPersonality: 表示MapTable使用指针进行isEqual和hash操作。</p>
+
+				</div>
+			</div>
+
+		</article>
+
+		<ul class="am-pagination">
+    
+	
+		<li class="am-pagination-next">
+		<a class="pull-right" href="/2018/09/10/hello-world/" title="Hello World">
+			下一篇&raquo;
+		</a>
+		</li>
+	 
+ </ul>
         
-  
-  
 
-		</div>
-	</div>
+			
+
+
+	</div> 
 </div>
+
+<!-- code highlight 测试版fix me-->
+<style>
+pre {
+  background: inherit;
+  border: 1px solid #ccc;
+  overflow-x: auto;
+  padding: .5em;
+  position: relative;
+  margin: 0 0 0.8em 0;
+  overflow-y: hidden
+}
+
+pre code {
+  margin: -0.5em !important;
+  padding: 0.5em !important;
+  overflow-y: auto;
+  overflow-x: auto;
+  display: block
+}
+
+code.has-numbering {
+  margin-left: 1.7em !important;
+  word-wrap: normal;
+  word-break: keep-all;
+  white-space: pre
+}
+
+.pre-numbering {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 2.2em;
+  height: 100%;
+  padding: 0.5em 0.2em 0.5em 0;
+  border-right: 1px solid #C3CCD0;
+  background-color: #EEE;
+  text-align: right;
+  color: #AAA;
+  list-style: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none
+}
+</style>
+<script src="//cdn.bootcss.com/highlight.js/9.2.0/highlight.min.js"></script>
+
+<!-- css爬取自网页 -->
+<!-- code highlight 测试版fix me-->
+
 
 		</div>
 		<footer>
@@ -230,6 +306,11 @@
 	}
 </style>
 
+
+	<script src="/js/motto.js"></script>
+	<script>
+		$(".motto").html(getMingYanContent());
+	</script>	
 
 
 
